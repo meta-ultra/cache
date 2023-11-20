@@ -6,7 +6,7 @@ An extensible and flexible cross-platform cache module.
 
 - Manipulates cache in consistent approach in all supported platforms.
 - Supports Web, H5, weixin mini-program and other platforms which Taro supports.
-- Write with and supports
+- Built with and fully supports TypeScript(yet sill enables developers to code in pure JavaScript).
 
 ## 👨‍👨‍👦‍👦 Familiy Members
 
