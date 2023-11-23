@@ -1,0 +1,13 @@
+# Ignore artifacts:
+dist
+build
+bundle
+*.min.js
+
+# Ignore scripts:
+**/scripts
+
+# Ignore configurations:
+*.config.js
+*.conf.js
+*rc.js
