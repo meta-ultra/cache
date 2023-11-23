@@ -1,6 +1,6 @@
 # Welcome to `@meta-ultra/cache`
 
-An extensible and flexible cross-platform cache module.
+An extensible, flexible and minimalist cross-platform cache module.
 
 ## 🌟 Features
 
