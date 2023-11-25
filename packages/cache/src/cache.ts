@@ -64,6 +64,9 @@ class Cache {
       this.#storage.read(this.#namespace).then(cache => {
         this.#cache = cache
         this.#setStatus(CacheStatus.FULFILLED)
+      }, (e) => {
+        this.#setStatus(CacheStatus.REJECTED)
+        console.error("[@meta-ultra/cache] Fails to read cache from external storage.", e)
       })
     }
     else {
@@ -89,6 +92,7 @@ class Cache {
       value = cacheItem.value
       if (cacheItem.expires !== undefined && now() >= cacheItem.expires) {
         this.remove(key);
+        value = undefined
       }
     }
 
@@ -134,13 +138,18 @@ class Cache {
   }
 
   remove(key: string): boolean {
-    this.#assertFulfilled()
-    return this.#cache.delete(key)
+    this.#assertFulfilled();
+    return this.#cache.delete(key);
   }
 
   removeAll(): void {
-    this.#assertFulfilled()
-    this.#cache.clear()
+    this.#assertFulfilled();
+    this.#cache.clear();
+  }
+
+  dispose(): void {
+    this.#assertFulfilled();
+    this.#setStatus(CacheStatus.REJECTED);
   }
 }
 
