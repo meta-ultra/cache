@@ -1,3 +1,4 @@
+import CacheStatus from "./CacheStatus";
 
 interface CacheOptions {
   prefix?: string;
@@ -12,6 +13,7 @@ interface CacheItem {
 class Cache {
   #prefix: string = "@meta-ultra/cache";
   #cache: Map<string, CacheItem>;
+  #status: CacheStatus = CacheStatus.PENDING;
 
   constructor(options?: CacheOptions) {
     if (options) {
@@ -36,7 +38,7 @@ class Cache {
     return this.#cache.delete(key)
   }
 
-  clearAll() {
+  removeAll() {
     this.#cache.clear()
   }
 }
