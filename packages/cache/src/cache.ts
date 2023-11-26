@@ -1,8 +1,16 @@
 import CacheStatus from "./CacheStatus";
 import { now } from "./utils";
 
+/**------------------------------------------------------------------------
+ *                           Pure In-memory Cache
+ *
+ * const storage = new WebStorage()
+ * const addons = makeAddons(makePeriodicSave(storage), makeBeforeUnloadSave(storage), makeRead(storage))
+ * const cache = addons(new Cache())
+ *------------------------------------------------------------------------**/
+
 interface Storage {
-  write(cache: Map<string, CacheItem>): Promise<boolean>;
+  write(namespace: string, cache: IterableIterator<[string, CacheItem]>): Promise<boolean>;
   read(namespace: string): Promise<Map<string, CacheItem>>;
 }
 
@@ -34,16 +42,20 @@ class Cache {
   #cache: Map<string, CacheItem>; // The in-memory storage
   #storage: Storage;              // The external storage
 
-  #setStatus(status: CacheStatus) {
-    this.#status = status
-    for (const callback of this.#callbacks.keys()) {
-      callback(this.#status)
-    }
-  }
-
   #assertFulfilled() {
     if (this.#status !== CacheStatus.FULFILLED) {
       throw Error("[@meta-ultra/cache] The cache instance currently is not available.")
+    }
+  }
+
+  get namespace() {
+    return this.#namespace;
+  }
+
+  set status(status: CacheStatus) {
+    this.#status = status
+    for (const callback of this.#callbacks.keys()) {
+      callback(this.#status)
     }
   }
 
@@ -63,14 +75,14 @@ class Cache {
     if (this.#storage) {
       this.#storage.read(this.#namespace).then(cache => {
         this.#cache = cache
-        this.#setStatus(CacheStatus.FULFILLED)
+        this.status = CacheStatus.FULFILLED
       }, (e) => {
-        this.#setStatus(CacheStatus.REJECTED)
+        this.status = CacheStatus.REJECTED
         console.error("[@meta-ultra/cache] Fails to read cache from external storage.", e)
       })
     }
     else {
-      this.#setStatus(CacheStatus.FULFILLED)
+      this.status = CacheStatus.FULFILLED
     }
   }
 
@@ -149,8 +161,13 @@ class Cache {
 
   dispose(): void {
     this.#assertFulfilled();
-    this.#setStatus(CacheStatus.REJECTED);
+    this.status = CacheStatus.REJECTED;
+  }
+
+  valueOf(): IterableIterator<[string, CacheItem]> {
+    return this.#cache.entries()
   }
 }
 
+export { Storage }
 export default Cache
