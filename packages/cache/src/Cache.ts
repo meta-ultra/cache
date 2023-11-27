@@ -54,6 +54,14 @@ class Cache {
   }
 
   set status(status: CacheStatus) {
+    if (status === CacheStatus.PENDING) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[@meta-ultra/cache] The status can not return back to pending if it has been changed.");
+      }
+
+      return
+    }
+
     this.#status = status
     for (const callback of this.#callbacks.keys()) {
       callback(this.#status)
