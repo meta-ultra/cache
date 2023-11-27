@@ -21,7 +21,7 @@ const makeInitialize: MakeInitialize = (storage) => (cache) => {
 
       cache.status = CacheStatus.FULFILLED
     }, (e) => {
-      console.error(e)
+      console.error("[@meta-ultra/cache] Fails to read cache from external storage.", e)
       cache.status = CacheStatus.REJECTED
     })
   }

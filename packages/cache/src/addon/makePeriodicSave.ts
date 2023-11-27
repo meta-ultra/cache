@@ -2,28 +2,31 @@ import { type Storage } from "../Cache"
 import CacheStatus from "../CacheStatus";
 import { Addon } from "./makeAddons";
 
-interface MakeBeforeUnloadSave {
-  (storage: Storage): Addon
+interface MakePeriodicSave {
+  (storage: Storage, timeout: number): Addon
 }
 
-const makeBeforeUnloadSave: MakeBeforeUnloadSave = (storage) => (cache) => {
+const makePeriodicSave: MakePeriodicSave = (storage, timeout) => (cache) => {
   const handler = () => {
     storage.write(cache.namespace, cache.valueOf());
   };
+
+  let hd;
   if (cache.status === CacheStatus.FULFILLED) {
-    window.addEventListener("beforeunload", handler);
+    hd = setInterval(handler, timeout);
   }
+
   cache.onStatusChange((status) => {
     if (status === CacheStatus.FULFILLED) {
-      window.addEventListener("beforeunload", handler);
+      hd = setInterval(handler, timeout);
     }
     else {
-      window.removeEventListener("beforeunload", handler);
+      clearInterval(hd)
     }
   })
 
   return cache
 }
 
-export type { MakeBeforeUnloadSave }
-export default makeBeforeUnloadSave
+export type { MakePeriodicSave }
+export default makePeriodicSave
