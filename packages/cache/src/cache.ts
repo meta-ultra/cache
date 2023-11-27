@@ -5,13 +5,13 @@ import { now } from "./utils";
  *                           Pure In-memory Cache
  *
  * const storage = new WebStorage()
- * const addons = makeAddons(makePeriodicSave(storage), makeBeforeUnloadSave(storage), makeRead(storage))
+ * const addons = makeAddons(makePeriodicSave(storage), makeBeforeUnloadSave(storage), makeInitialFromStorage(storage))
  * const cache = addons(new Cache())
  *------------------------------------------------------------------------**/
 
 interface Storage {
   write(namespace: string, cache: IterableIterator<[string, CacheItem]>): Promise<boolean>;
-  read(namespace: string): Promise<Map<string, CacheItem>>;
+  read(namespace: string): Promise<IterableIterator<[string, CacheItem]>>;
 }
 
 interface CacheOptions {

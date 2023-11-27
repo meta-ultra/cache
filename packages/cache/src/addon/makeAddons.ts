@@ -1,6 +1,10 @@
 import Cache from "../Cache"
 
-const makeAddons = (...addons: any) => (cache: Cache) => {
+interface Addon {
+  (cache: Cache): Cache;
+}
+
+const makeAddons = (...addons: Addon[]) => (cache: Cache) => {
   for (let i = addons.length - 1; i >= 0; i--) {
     cache = addons[i](cache)
   }
@@ -8,4 +12,5 @@ const makeAddons = (...addons: any) => (cache: Cache) => {
   return cache
 }
 
+export type { Addon }
 export default makeAddons

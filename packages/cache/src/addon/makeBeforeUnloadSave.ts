@@ -1,7 +1,12 @@
-import Cache, { type Storage } from "../Cache"
+import { type Storage } from "../Cache"
 import CacheStatus from "../CacheStatus";
+import { Addon } from "./makeAddons";
 
-const makeBeforeUnloadSave = (storage: Storage) => (cache: Cache) => {
+interface MakeBeforeUnloadSave {
+  (storage: Storage): Addon
+}
+
+const makeBeforeUnloadSave: MakeBeforeUnloadSave = (storage) => (cache) => {
   const handler = () => {
     storage.write(cache.namespace, cache.valueOf());
   };
@@ -15,4 +20,5 @@ const makeBeforeUnloadSave = (storage: Storage) => (cache: Cache) => {
   return cache
 }
 
+export type { MakeBeforeUnloadSave }
 export default makeBeforeUnloadSave
