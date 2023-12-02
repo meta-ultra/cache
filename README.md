@@ -8,13 +8,15 @@ An extensible, flexible and minimalist cross-platform cache module.
 - Supports Web, H5, weixin mini-program and other platforms which Taro supports.
 - Built with and fully supports TypeScript(yet sill enables developers to code in pure JavaScript).
 
-## 👨‍👨‍👦‍👦 Familiy Members
+## 👨‍👨‍👦‍👦 Family Members
 
 - `@meta-ultra/cache` exposes APIs for cache manipulations (status: in the plan)
-- `@meta-ultra/web-storage` makes use of web storage as the persistent layer for `@meta-ultra/cache`  (status: in the plan)
-- `@meta-utlra/taro-storage` makes use of storage module of Taro as the persistent layer for `@meta-ultra/cache`  (status: in the plan)
-- `@meta-ultra/index-db` makes use of IndexDB as the persistent layer for `@meta-ultra/cache`  (status: in the plan)
-- 
+- `@meta-ultra/cache-react` adapter for react (status: in the plan)
+- `@meta-ultra/cache-web-storage` makes use of web storage as the persistent layer for `@meta-ultra/cache`  (status: in the plan)
+- `@meta-ultra/cache-taro-storage` makes use of storage module of Taro as the persistent layer for `@meta-ultra/cache`  (status: in the plan)
+- `@meta-ultra/cache-index-db` makes use of IndexDB as the persistent layer for `@meta-ultra/cache`  (status: in the plan)
+-
+
 ## 👶 Author
 
 Hey, friends. I'm John Huang, a full stack developer majorly code with React, Next.js, GraphQL, TailwindCSS, Taro and SpringBoot. Feel free to contact with me 😃
