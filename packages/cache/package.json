@@ -1,0 +1,55 @@
+{
+  "name": "@meta-ultra/cache",
+  "private": false,
+  "version": "0.3.0",
+  "description": "An extensible, flexible and minimalist cross-platform cache module",
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "dev": "pnpm run \"/^dev:.*/\"",
+    "dev:src": "rollup --watch -c ./rollup.config.js",
+    "dev:types": "tsc --watch -P ./tsconfig.types.json",
+    "build": "pnpm clean && cross-env NODE_ENV=production pnpm run \"/^build:.*/\"",
+    "build:src": "rollup -c ./rollup.config.js",
+    "build:types": "tsc -P ./tsconfig.types.json"
+  },
+  "unpkg": "./dist/cache.umd.js",
+  "module": "./dist/cache.esm.js",
+  "main": "./dist/cache.cjs.js",
+  "typings": "./dist/types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "./dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "vue",
+    "react",
+    "cache"
+  ],
+  "author": "fsjohnhuang",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/plugin-transform-react-constant-elements": "^7.22.5",
+    "@babel/plugin-transform-runtime": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
+    "@types/node": "^20.2.5",
+    "@typescript-eslint/eslint-plugin": "^5.59.9",
+    "@typescript-eslint/parser": "^5.59.9",
+    "babel": "^6.23.0",
+    "babel-plugin-import": "^1.13.8",
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.1.4",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-uglify": "^6.0.4",
+    "typescript": "^5.1.3"
+  }
+}
