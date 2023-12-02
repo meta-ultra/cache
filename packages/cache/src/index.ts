@@ -1,0 +1,6 @@
+export { default as Cache } from "./Cache"
+export type { Storage } from "./Cache"
+export { default as makeAddons } from "./addon/makeAddons"
+export { default as makeBeforeUnloadSave } from "./addon/makeBeforeUnloadSave"
+export { default as makePeriodicSave } from "./addon/makePeriodicSave"
+export { default as standardAddons } from "./addon/standardAddons"
