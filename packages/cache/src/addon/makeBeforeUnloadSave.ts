@@ -1,4 +1,4 @@
-import { type Storage } from "../Cache"
+import { CacheEvent, type Storage, type CacheEventStatusCallback } from "../Cache"
 import CacheStatus from "../CacheStatus";
 import { Addon } from "./makeAddons";
 
@@ -13,7 +13,7 @@ const makeBeforeUnloadSave: MakeBeforeUnloadSave = (storage) => (cache) => {
   if (cache.status === CacheStatus.FULFILLED) {
     window.addEventListener("beforeunload", handler);
   }
-  cache.onStatusChange((status) => {
+  cache.on<CacheEventStatusCallback>(CacheEvent.STATUS, (status) => {
     if (status === CacheStatus.FULFILLED) {
       window.addEventListener("beforeunload", handler);
     }

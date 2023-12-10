@@ -1,4 +1,4 @@
-import { type Storage } from "../Cache"
+import { type Storage, type CacheEventStatusCallback, CacheEvent } from "../Cache"
 import CacheStatus from "../CacheStatus";
 import { Addon } from "./makeAddons";
 
@@ -11,12 +11,12 @@ const makePeriodicSave: MakePeriodicSave = (storage, timeout) => (cache) => {
     storage.write(cache.namespace, cache.valueOf());
   };
 
-  let hd;
+  let hd: number | undefined = undefined;
   if (cache.status === CacheStatus.FULFILLED) {
     hd = setInterval(handler, timeout);
   }
 
-  cache.onStatusChange((status) => {
+  cache.on<CacheEventStatusCallback>(CacheEvent.STATUS, (status) => {
     if (status === CacheStatus.FULFILLED) {
       hd = setInterval(handler, timeout);
     }

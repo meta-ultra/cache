@@ -1,4 +1,5 @@
 import CacheStatus from "./CacheStatus";
+import EventEmitter from "./EventEmitter"
 import { now } from "./utils";
 
 /**------------------------------------------------------------------------
@@ -27,20 +28,20 @@ interface CacheItem {
   persist: boolean;
 }
 
-interface StatusChangeCallback {
-  (status: CacheStatus): void
-}
-
 interface SetCacheOptions {
   persist?: boolean;
   maxAge?: number;
 }
 
-class Cache {
+enum CacheEvent {
+  STATUS = "status",
+}
+type CacheEventStatusCallback = (status: CacheStatus) => void
+
+class Cache extends EventEmitter{
   // #version: string = process.env.VERSION;
   #namespace: string = "@meta-ultra/cache";
   #status: CacheStatus = CacheStatus.PENDING;
-  #callbacks: Map<StatusChangeCallback, StatusChangeCallback>;
   #cache: Map<string, CacheItem>;
 
   #assertFulfilled() {
@@ -63,9 +64,7 @@ class Cache {
     }
 
     this.#status = status
-    for (const callback of this.#callbacks.keys()) {
-      callback(this.#status)
-    }
+    super.emit(CacheEvent.STATUS, this.#status)
   }
 
   get status() {
@@ -73,22 +72,12 @@ class Cache {
   }
 
   constructor(options?: CacheOptions) {
+    super();
     if (options) {
       this.#namespace = options.namespace || this.#namespace
     }
 
     this.#cache = new Map()
-    this.#callbacks = new Map()
-  }
-
-  onStatusChange(callback: StatusChangeCallback): () => void {
-    if (!this.#callbacks.has(callback)) {
-      this.#callbacks.set(callback, () => {
-        this.#callbacks.delete(callback)
-      })
-    }
-
-    return this.#callbacks.get(callback) as () => void
   }
 
   get(key: string): unknown {
@@ -159,5 +148,6 @@ class Cache {
   }
 }
 
-export { Storage }
+export type { Storage, CacheEventStatusCallback }
+export { CacheEvent }
 export default Cache
