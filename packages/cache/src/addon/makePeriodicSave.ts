@@ -1,4 +1,5 @@
-import { type Storage, type CacheEventStatusCallback, CacheEvent } from "../Cache"
+import { type Storage } from "../Cache"
+import CacheEvent, { type CacheEventStatusCallback } from "../CacheEvent"
 import CacheStatus from "../CacheStatus";
 import { Addon } from "./makeAddons";
 

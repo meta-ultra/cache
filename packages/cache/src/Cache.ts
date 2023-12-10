@@ -1,6 +1,7 @@
 import CacheStatus from "./CacheStatus";
+import CacheEvent from "./CacheEvent";
 import EventEmitter from "./EventEmitter"
-import { now } from "./utils";
+import { now, nextTick } from "./utils";
 
 /**------------------------------------------------------------------------
  *                           Pure In-memory Cache
@@ -32,13 +33,6 @@ interface SetCacheOptions {
   persist?: boolean;
   maxAge?: number;
 }
-
-enum CacheEvent {
-  STATUS = "status",
-  VALUE = "value",
-}
-type CacheEventStatusCallback = (status: CacheStatus) => void
-type CacheEventValueCallback = (type: "create" | "remove" | "change", newValue: any, oldValue?: any) => void
 
 class Cache extends EventEmitter{
   // #version: string = process.env.VERSION;
@@ -126,6 +120,17 @@ class Cache extends EventEmitter{
       return false;
     }
 
+
+    if (this.#cache.has(key)) {
+      const oldItem = this.#cache.get(key)
+      if (oldItem) {
+        nextTick(() => this.emit(CacheEvent.VALUE, "change", key, value, oldItem.value))
+      }
+    }
+    else {
+      nextTick(() => this.emit(CacheEvent.VALUE, "create", key, value))
+    }
+
     this.#cache.set(key, {
       value,
       expires,
@@ -137,6 +142,13 @@ class Cache extends EventEmitter{
 
   remove(key: string): boolean {
     this.#assertFulfilled();
+    if (this.#cache.has(key)) {
+      const oldItem = this.#cache.get(key)
+      if (oldItem) {
+        nextTick(() => this.emit(CacheEvent.VALUE, "remove", key, undefined, oldItem.value))
+      }
+    }
+
     return this.#cache.delete(key);
   }
 
@@ -150,6 +162,6 @@ class Cache extends EventEmitter{
   }
 }
 
-export type { Storage, CacheEventStatusCallback, CacheEventValueCallback }
+export type { Storage }
 export { CacheEvent }
 export default Cache
