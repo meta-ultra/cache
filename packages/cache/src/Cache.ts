@@ -35,8 +35,10 @@ interface SetCacheOptions {
 
 enum CacheEvent {
   STATUS = "status",
+  VALUE = "value",
 }
 type CacheEventStatusCallback = (status: CacheStatus) => void
+type CacheEventValueCallback = (type: "create" | "remove" | "change", newValue: any, oldValue?: any) => void
 
 class Cache extends EventEmitter{
   // #version: string = process.env.VERSION;
@@ -148,6 +150,6 @@ class Cache extends EventEmitter{
   }
 }
 
-export type { Storage, CacheEventStatusCallback }
+export type { Storage, CacheEventStatusCallback, CacheEventValueCallback }
 export { CacheEvent }
 export default Cache
