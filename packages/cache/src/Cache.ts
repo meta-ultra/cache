@@ -1,5 +1,5 @@
 import CacheStatus from "./CacheStatus";
-import CacheEvent from "./CacheEvent";
+import CacheEvent, { CacheValueEvent } from "./CacheEvent";
 import EventEmitter from "./EventEmitter"
 import { now, nextTick } from "./utils";
 
@@ -27,6 +27,7 @@ interface CacheItem {
   value: unknown;
   expires?: number;
   persist: boolean;
+  timestamp: number;
 }
 
 interface SetCacheOptions {
@@ -100,17 +101,19 @@ class Cache extends EventEmitter{
       return false;
     }
 
-    let persist = false
+    let persist = undefined
     let expires: undefined | number = undefined
     if (options) {
       if (typeof options === "number") {
         expires = now() + options;
       }
-      else if (options.maxAge) {
-        expires = now() + options.maxAge;
-      }
-      else if (options.persist) {
-        persist = true;
+      else if (options) {
+        if (options.maxAge) {
+          expires = now() + options.maxAge;
+        }
+        if (options.persist !== undefined) {
+          persist = options.persist;
+        }
       }
     }
 
@@ -124,17 +127,24 @@ class Cache extends EventEmitter{
     if (this.#cache.has(key)) {
       const oldItem = this.#cache.get(key)
       if (oldItem) {
-        nextTick(() => this.emit(CacheEvent.VALUE, "change", key, value, oldItem.value))
+        if (expires === undefined && oldItem.expires) {
+          expires = expires
+        }
+        if (persist === undefined && oldItem.persist !== undefined) {
+          persist = oldItem.persist
+        }
+        nextTick(() => this.emit(CacheEvent.VALUE, CacheValueEvent.CHANGE, key, value, oldItem.value))
       }
     }
     else {
-      nextTick(() => this.emit(CacheEvent.VALUE, "create", key, value))
+      nextTick(() => this.emit(CacheEvent.VALUE, CacheValueEvent.ADD, key, value))
     }
 
     this.#cache.set(key, {
       value,
       expires,
-      persist,
+      persist: !!persist,
+      timestamp: now()
     });
 
     return true;
@@ -145,7 +155,7 @@ class Cache extends EventEmitter{
     if (this.#cache.has(key)) {
       const oldItem = this.#cache.get(key)
       if (oldItem) {
-        nextTick(() => this.emit(CacheEvent.VALUE, "remove", key, undefined, oldItem.value))
+        nextTick(() => this.emit(CacheEvent.VALUE, CacheValueEvent.DELETE, key, undefined, oldItem.value))
       }
     }
 

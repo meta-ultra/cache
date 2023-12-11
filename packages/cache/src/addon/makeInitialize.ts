@@ -15,7 +15,7 @@ const makeInitialize: MakeInitialize = (storage) => (cache) => {
         const { value, persist, expires } = item
         cache.set(key, value, {
           persist,
-          maxAge: (expires || 0) - current
+          maxAge: (expires || 0) - current,
         })
       }
 
